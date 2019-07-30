@@ -60,8 +60,8 @@ const sendMail = (user) => {
 	const transporter = nodemailer.createTransport({
 		host: 'smtp.gmail.com',
 		auth: {
-			user: 'youssef.jdidi@esprit.tn',
-			pass: '2503504525035045'
+			user: 'example@email.com',
+			pass: '****'
 		}
 	});
 	const mailOptions = {
