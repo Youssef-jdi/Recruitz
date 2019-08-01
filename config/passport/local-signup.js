@@ -60,12 +60,12 @@ const sendMail = (user) => {
 	const transporter = nodemailer.createTransport({
 		host: 'smtp.gmail.com',
 		auth: {
-			user: 'example@email.com',
-			pass: '****'
+			user: process.env.EMAIL,
+			pass: process.env.PASSWORD
 		}
 	});
 	const mailOptions = {
-		from: 'youssef.jdidi@esprit.tn',
+		from: process.env.EMAIL,
 		to: user.email,
 		subject: 'Quiz',
 		text: 'http://localhost:3000/updatepassword/' + token

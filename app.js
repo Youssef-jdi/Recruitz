@@ -1,6 +1,7 @@
 // dependencies
 const express = require('express');
 const app = express();
+require('dotenv').config()
 const morgan = require('morgan');
 const bodyParser = require('body-parser');
 var cors = require('cors');
@@ -13,9 +14,7 @@ let users = require('./src/routes/users');
 let auth = require('./src/routes/auth');
 let quiz = require('./src/routes/Quiz');
 const localSignUp = require('./config/passport/local-signup');
-
 const localLogin = require('./config/passport/local-login');
-
 const authCheckMiddleware = require('./src/middleware/auth-check');
 const SuperAdminCheckMiddleware = require('./src/middleware/superAdmin-check');
 
