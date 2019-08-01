@@ -40,7 +40,7 @@ router.get('/MyQuizes/:id', (req, res) => {
 
 router.get('/pass/:id', (req, res) => {
 	const idUser = req.params.id;
-	
+
 	User.findOne({ _id: idUser }, (err, user) => {
 		if (err) {
 			res.status(500).json({ success: 0 });
@@ -52,11 +52,10 @@ router.get('/pass/:id', (req, res) => {
 				if (err) {
 					res.status(500).json({ success: 0 });
 				} else if (typeof quiz === 'undefined' || quiz === null) {
-					
 					res.status(400).json({ success: 0 });
 				} else {
-					console.log('/pass quiz user ',user)
-					console.log('/pass quiz quiz ',quiz)
+					console.log('/pass quiz user ', user);
+					console.log('/pass quiz quiz ', quiz);
 					res.status(200).json({ success: 1, quiz: quiz });
 				}
 			});
@@ -116,8 +115,7 @@ router.get('/result/:id', (req, res) => {
 					delete quiz.maxTimeToFinish;
 					delete quiz.maxTimeToFinishPage;
 					delete quiz.showTimerPanel;
-					
-		
+
 					res.status(200).json({ success: true, user: user, quiz: quiz });
 				}
 			});
@@ -153,6 +151,20 @@ router.post('/delete', (req, res) => {
 	Quiz.remove({ _id: quiz._id }, (err, quiz) => {
 		if (err) res.status(500).json({ success: false });
 		res.status(200).json({ success: true });
+	});
+});
+
+router.get('/isStarted/:id', (req, res) => {
+	//get user then get his quiz and look for time To finish the quiz and compare it with startedAt in user object
+	const idUser = req.params.id;
+	User.findOne({ _id: idUser }, (err, user) => {
+		if (err) res.status(500).json({});
+		if (user === null || typeof user === 'undefined') res.status(400).json({});
+		Quiz.findOne({ _id: user.quizToPass }, (err, quiz) => {
+			if (err) res.status(500).json({});
+			if (quiz === null || typeof quiz === 'undefined') res.status(400).json({});
+			
+		});
 	});
 });
 
