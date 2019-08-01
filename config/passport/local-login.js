@@ -53,6 +53,7 @@ module.exports = new PassportLocalStrategy({
          role : user.role,
          id : user._id
        };
+       console.log(dataToclient)
 
       return done(null, token, dataToclient);
     });

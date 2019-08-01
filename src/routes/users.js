@@ -2,45 +2,34 @@ const express = require('express');
 const validator = require('validator');
 const passport = require('passport');
 const router = new express.Router();
-const User = require('../models/user')
+const User = require('../models/user');
 
-
-
-router.post('/reset',(req,res)=>{
-   
-    User.findOne({ 
-        
-        updatePasswordToken: req.body.token,
-        resetPasswordExpires : { $gt : Date.now() }
-        
-        
-        
-        })
-    
-        .then(user => {
-        
-        if(user === null){
-            console.log('password reset link is invalid or has expired .')
-            res.json({
-                success : false,
-                user : null
-            })
-        }
-        else {
-            res.status(200).json({
-                success: true,
-                user: user
-            })
-        }
-        })
-        .catch(err => console.log('erreur find '+err))
-})
-
+router.post('/reset', (req, res) => {
+	User.findOne({
+		updatePasswordToken: req.body.token,
+		resetPasswordExpires: { $gt: Date.now() }
+	})
+		.then((user) => {
+			if (user === null) {
+				console.log('password reset link is invalid or has expired .');
+				res.json({
+					success: false,
+					user: null
+				});
+			} else {
+				res.status(200).json({
+					success: true,
+					user: user
+				});
+			}
+		})
+		.catch((err) => console.log('erreur find ' + err));
+});
 
 router.post('/login', (req, res, next) => {
 	const validationResult = validateLoginForm(req.body);
 	if (!validationResult.success) {
-        console.error('validation ')
+		console.error('validation ');
 		return res.status(400).json({
 			success: false,
 			message: validationResult.message,
@@ -51,13 +40,13 @@ router.post('/login', (req, res, next) => {
 	return passport.authenticate('local-login', (err, token, userData) => {
 		if (err) {
 			if (err.name === 'IncorrectCredentialsError') {
-                console.error('Credential ')
+				console.error('Credential ');
 				return res.status(400).json({
 					success: false,
 					message: err.message
 				});
 			}
-            console.error('400 w kahaw ')
+			console.error('400 w kahaw ');
 			return res.status(400).json({
 				success: false,
 				message: err.message
@@ -73,24 +62,34 @@ router.post('/login', (req, res, next) => {
 	})(req, res, next);
 });
 
+router.post('/firstlogin', (req, res) => {
+	const user = req.body.user;
+	delete user.resetPasswordExpires;
+	delete user.updatePasswordToken;
+	User.find({ email: user.email }).remove().exec();
+	const newUser = new User(user);
+	newUser
+		.save()
+		.then((user) => {
+			console.log('newnewuser ', user);
+			res.json({ user: user, success: true });
+		})
+		.catch((err) => {
+			console.log(err);
+			res.json({ user: null, success: false });
+		});
+});
 
 
-
- router.post('/firstlogin',(req,res) => {
-    const user = req.body.user
-    delete user.resetPasswordExpires
-    delete user.updatePasswordToken
-    User.find({email : user.email}).remove().exec()
-    const newUser = new User(user);
-    newUser.save().then(user => {
-        console.log('newnewuser ',user)
-        res.json({user : user , success : true})
-    }).catch(err => {
-        console.log(err)
-        res.json({user : null , success : false})
-    });
+router.get('/Candidates',(req,res) =>{
+	User.find({role : 'Candidate'},(err,user)=>{
+		if(err) res.status(500).json({success : false})
+	   else	if(typeof user === "undefined" || user === null) res.status(400).json({success : false})
+	   else {
+		   res.status(200).json({success : true , candidates : user})
+	   }
+	})
 })
-
 
 
 /**
@@ -100,7 +99,7 @@ router.post('/login', (req, res, next) => {
  * @returns {object} The result of validation. Object contains a boolean validation result,
  *                   errors tips, and a global message for the whole form.
  */
- function validateLoginForm(payload) {
+function validateLoginForm(payload) {
 	const errors = {};
 	let isFormValid = true;
 	let message = '';
@@ -126,6 +125,4 @@ router.post('/login', (req, res, next) => {
 	};
 }
 
-
-
-module.exports = router
+module.exports = router;
