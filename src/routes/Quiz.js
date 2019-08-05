@@ -40,22 +40,22 @@ router.get('/MyQuizes/:id', (req, res) => {
 
 router.get('/pass/:id', (req, res) => {
 	const idUser = req.params.id;
-
+	console.log('idUser parameter',idUser)
 	User.findOne({ _id: idUser }, (err, user) => {
 		if (err) {
-			res.status(500).json({ success: false });
+			res.status(500).json({ success: 0 });
 		} else if (typeof user === 'undefined' || user === null) {
 			console.log('user ', user);
-			res.status(400).json({ success: false });
+			res.status(400).json({ success: 0 });
 		} else {
 			Quiz.findOne({ _id: user.quizToPass }, (err, quiz) => {
 				if (err) {
-					res.status(500).json({ success: false });
+					res.status(500).json({ success: 0 });
 				} else if (typeof quiz === 'undefined' || quiz === null) {
-					console.log('user ', quiz);
-					res.status(400).json({ success: false });
+					console.log('quiz ', quiz);
+					res.status(400).json({ success: 0 });
 				} else {
-					res.status(200).json({ success: true, quiz: quiz });
+					res.status(200).json({ success: 1, quiz: quiz });
 				}
 			});
 		}
