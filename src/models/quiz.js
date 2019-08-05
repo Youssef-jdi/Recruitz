@@ -1,9 +1,9 @@
 const mongoose = require('mongoose')
-
+const UserSchema = require('../models/user').schema
 
 const QuizSchema = mongoose.Schema({
-    madeBy : { type: mongoose.Schema.Types.ObjectId, ref: 'User'},
-    date : Date
+    madeBy : UserSchema,
+    date : Date 
 },
 {strict : false})
 
