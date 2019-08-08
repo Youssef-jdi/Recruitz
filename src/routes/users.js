@@ -99,6 +99,14 @@ router.get('/isQuizPassed/:id', (req, res) => {
 	});
 });
 
+router.post('/startQuiz',(req,res)=>{
+	const user = req.body
+	User.findOneAndUpdate({_id : user.id},{startedAt : Date.now()} , (err,user)=>{
+		console.log('/startQuiz ', user)
+	})
+	res.end()
+})
+
 /**
  * Validate the login form
  *

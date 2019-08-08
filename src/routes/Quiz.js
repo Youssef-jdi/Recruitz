@@ -40,7 +40,7 @@ router.get('/MyQuizes/:id', (req, res) => {
 
 router.get('/pass/:id', (req, res) => {
 	const idUser = req.params.id;
-	console.log('idUser parameter', idUser);
+	
 	User.findOne({ _id: idUser }, (err, user) => {
 		if (err) {
 			res.status(500).json({ success: 0 });
@@ -52,9 +52,11 @@ router.get('/pass/:id', (req, res) => {
 				if (err) {
 					res.status(500).json({ success: 0 });
 				} else if (typeof quiz === 'undefined' || quiz === null) {
-					console.log('quiz ', quiz);
+					
 					res.status(400).json({ success: 0 });
 				} else {
+					console.log('/pass quiz user ',user)
+					console.log('/pass quiz quiz ',quiz)
 					res.status(200).json({ success: 1, quiz: quiz });
 				}
 			});
