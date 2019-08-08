@@ -24,7 +24,7 @@ router.post('/Create', (req, res) => {
 			});
 	});
 });
-//tochange
+
 router.get('/MyQuizes/:id', (req, res) => {
 	const idUser = req.params.id;
 
@@ -40,7 +40,7 @@ router.get('/MyQuizes/:id', (req, res) => {
 
 router.get('/pass/:id', (req, res) => {
 	const idUser = req.params.id;
-	console.log('idUser parameter',idUser)
+	console.log('idUser parameter', idUser);
 	User.findOne({ _id: idUser }, (err, user) => {
 		if (err) {
 			res.status(500).json({ success: 0 });
@@ -101,7 +101,6 @@ router.get('/result/:id', (req, res) => {
 		} else if (typeof user === 'undefined' || user === null) {
 			res.status(400).json({ success: false });
 		} else {
-			console.log('user ', user);
 			Quiz.findOne({ _id: user.quizToPass }, (err, quiz) => {
 				if (err) {
 					res.status(500).json({ success: false });
@@ -109,7 +108,14 @@ router.get('/result/:id', (req, res) => {
 				if (typeof quiz === 'undefined' || quiz === null) {
 					res.status(400).json({ success: false });
 				} else {
-					console.log('quiz ', quiz);
+					quiz = quiz.toObject();
+					delete quiz.cookieName;
+					delete quiz.showPrevButton;
+					delete quiz.maxTimeToFinish;
+					delete quiz.maxTimeToFinishPage;
+					delete quiz.showTimerPanel;
+					
+		
 					res.status(200).json({ success: true, user: user, quiz: quiz });
 				}
 			});
@@ -131,23 +137,21 @@ router.get('/AllQuizes', (req, res) => {
 	});
 });
 
-router.post('/assign',(req,res)=>{
-	const user = req.body.user
-	const quiz = req.body.quiz
-	User.findOneAndUpdate({_id : user._id},{quizToPass : quiz},(err,user)=>{
-		if(err) res.status(500).json({success : false})
-		res.status(200).json({success : true})	
-	})
+router.post('/assign', (req, res) => {
+	const user = req.body.user;
+	const quiz = req.body.quiz;
+	User.findOneAndUpdate({ _id: user._id }, { quizToPass: quiz }, (err, user) => {
+		if (err) res.status(500).json({ success: false });
+		res.status(200).json({ success: true });
+	});
+});
 
-})
-
-
-router.post('/delete',(req,res)=>{
-	const quiz = req.body.quiz
-	Quiz.remove({_id : quiz._id},(err,quiz)=>{
-		if(err) res.status(500).json({success : false})
-		res.status(200).json({success : true})
-	})
-})
+router.post('/delete', (req, res) => {
+	const quiz = req.body.quiz;
+	Quiz.remove({ _id: quiz._id }, (err, quiz) => {
+		if (err) res.status(500).json({ success: false });
+		res.status(200).json({ success: true });
+	});
+});
 
 module.exports = router;

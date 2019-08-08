@@ -27,7 +27,8 @@ const UserSchema = mongoose.Schema({
   updatePasswordToken : String,
   resetPasswordExpires : String,
   quizToPass : { type: mongoose.Schema.Types.ObjectId, ref: 'Quiz'},
-  resultQuiz : {}
+  resultQuiz : {},
+  
 });
 
 Object.assign(UserSchema.statics, {

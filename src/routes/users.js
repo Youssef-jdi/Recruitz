@@ -40,13 +40,13 @@ router.post('/login', (req, res, next) => {
 	return passport.authenticate('local-login', (err, token, userData) => {
 		if (err) {
 			if (err.name === 'IncorrectCredentialsError') {
-				console.error('Credential ',err.message);
+				console.error('Credential ', err.message);
 				return res.status(400).json({
 					success: false,
 					message: err.message
 				});
 			}
-			console.error('400 w kahaw ',err.message);
+			console.error('400 w kahaw ', err.message);
 			return res.status(400).json({
 				success: false,
 				message: err.message
@@ -80,17 +80,24 @@ router.post('/firstlogin', (req, res) => {
 		});
 });
 
+router.get('/Candidates', (req, res) => {
+	User.find({ role: 'Candidate' }, (err, user) => {
+		if (err) res.status(500).json({ success: false });
+		else if (typeof user === 'undefined' || user === null) res.status(400).json({ success: false });
+		else {
+			res.status(200).json({ success: true, candidates: user });
+		}
+	});
+});
 
-router.get('/Candidates',(req,res) =>{
-	User.find({role : 'Candidate'},(err,user)=>{
-		if(err) res.status(500).json({success : false})
-	   else	if(typeof user === "undefined" || user === null) res.status(400).json({success : false})
-	   else {
-		   res.status(200).json({success : true , candidates : user})
-	   }
-	})
-})
-
+router.get('/isQuizPassed/:id', (req, res) => {
+	const idUser = req.params.id;
+	User.findOne({ _id: idUser }, (err, user) => {
+		if (err) res.status(500).json({ isPassed: false });
+		user === null || typeof user === 'undefined' ? console.log('user undefined or null') : console.log('user is here')
+		user.resultQuiz === null || typeof user.resultQuiz === 'undefined' ? res.status(200).json({ isPassed: false }) : res.status(200).json({ isPassed: true });
+	});
+});
 
 /**
  * Validate the login form
