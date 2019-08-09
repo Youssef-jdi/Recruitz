@@ -45,7 +45,7 @@ router.get('/pass/:id', (req, res) => {
 		if (err) {
 			res.status(500).json({ success: 0 });
 		} else if (typeof user === 'undefined' || user === null) {
-			console.log('user ', user);
+			// console.log('user ', user);
 			res.status(400).json({ success: 0 });
 		} else {
 			Quiz.findOne({ _id: user.quizToPass }, (err, quiz) => {
@@ -54,8 +54,8 @@ router.get('/pass/:id', (req, res) => {
 				} else if (typeof quiz === 'undefined' || quiz === null) {
 					res.status(400).json({ success: 0 });
 				} else {
-					console.log('/pass quiz user ', user);
-					console.log('/pass quiz quiz ', quiz);
+					// console.log('/pass quiz user ', user);
+					// console.log('/pass quiz quiz ', quiz);
 					res.status(200).json({ success: 1, quiz: quiz });
 				}
 			});
@@ -154,17 +154,40 @@ router.post('/delete', (req, res) => {
 	});
 });
 
+//isStarted with date
+// router.get('/isStarted/:id', (req, res) => {
+// 	//get user then get his quiz and look for time To finish the quiz and compare it with startedAt in user object
+// 	const idUser = req.params.id;
+// 	User.findOne({ _id: idUser }, (err, user) => {
+// 		if (err) res.status(500).json({});
+// 		if (user === null || typeof user === 'undefined') res.status(400).json({});
+// 		Quiz.findOne({ _id: user.quizToPass }, (err, quiz) => {
+// 			if (err) res.status(500).json({});
+// 			if (quiz === null || typeof quiz === 'undefined') res.status(400).json({});
+// 			quiz = quiz.toObject();
+// 			const startedAtDate = new Date(user.startedAt);
+// 			startedAtDate.setSeconds(startedAtDate.getSeconds() + quiz.maxTimeToFinish);
+// 			console.log(startedAtDate);
+// 			res.end();
+// 			// user.startedAt === null || typeof user.startedAt === 'undefined'
+// 			// 	? res.status(400).json({})
+// 			// 	: user.startedAt + quiz.maxTimeToFinish > Date.now()
+// 			// 		? res.status(400).json({})
+// 			// 		: res.status(200).json({});
+// 		});
+// 	});
+// });
+
 router.get('/isStarted/:id', (req, res) => {
-	//get user then get his quiz and look for time To finish the quiz and compare it with startedAt in user object
 	const idUser = req.params.id;
 	User.findOne({ _id: idUser }, (err, user) => {
-		if (err) res.status(500).json({});
-		if (user === null || typeof user === 'undefined') res.status(400).json({});
-		Quiz.findOne({ _id: user.quizToPass }, (err, quiz) => {
-			if (err) res.status(500).json({});
-			if (quiz === null || typeof quiz === 'undefined') res.status(400).json({});
-			
-		});
+		err
+			? res.status(500).json({ success: false })
+			: user === null || typeof user === 'undefined'
+				? res.status(400).json({ success: false })
+				: user.startedAt === null || typeof user.startedAt === 'undefined'
+					? res.status(200).json({ started: false, success: true })
+					: res.status(200).json({ started: true, success: true });
 	});
 });
 

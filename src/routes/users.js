@@ -95,14 +95,23 @@ router.get('/isQuizPassed/:id', (req, res) => {
 	User.findOne({ _id: idUser }, (err, user) => {
 		if (err) res.status(500).json({ isPassed: false });
 		user === null || typeof user === 'undefined' ? console.log('user undefined or null') : console.log('user is here')
-		user.resultQuiz === null || typeof user.resultQuiz === 'undefined' ? res.status(200).json({ isPassed: false }) : res.status(200).json({ isPassed: true });
+		console.log(user)
+		user.resultQuiz === null || typeof user.resultQuiz === 'undefined' ? res.status(200).json({ isPassed: false, user : user }) : res.status(200).json({ isPassed: true , user : user });
 	});
 });
 
 router.post('/startQuiz',(req,res)=>{
 	const user = req.body
 	User.findOneAndUpdate({_id : user.id},{startedAt : Date.now()} , (err,user)=>{
-		console.log('/startQuiz ', user)
+		//console.log('/startQuiz ', user)
+	})
+	res.end()
+})
+
+router.post('/reload',(req,res)=>{
+	const user = req.body
+	User.findOneAndUpdate({_id : user.id},{reloadPage : true},(err,user)=> {
+		//console.log('/reload ', user)
 	})
 	res.end()
 })
