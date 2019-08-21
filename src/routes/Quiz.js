@@ -148,35 +148,18 @@ router.post('/assign', (req, res) => {
 
 router.post('/delete', (req, res) => {
 	const quiz = req.body.quiz;
-	Quiz.remove({ _id: quiz._id }, (err, quiz) => {
+	Quiz.remove({ _id: quiz._id }, (err,status) => {
 		if (err) res.status(500).json({ success: false });
-		res.status(200).json({ success: true });
+		Quiz.find({},(err,quizes)=>{
+			if(err) res.status(500).json({ success: false });
+			console.log('quizes ',quizes)
+			res.status(200).json({ success: true , quizes : quizes});
+		})
+		
 	});
 });
 
-//isStarted with date
-// router.get('/isStarted/:id', (req, res) => {
-// 	//get user then get his quiz and look for time To finish the quiz and compare it with startedAt in user object
-// 	const idUser = req.params.id;
-// 	User.findOne({ _id: idUser }, (err, user) => {
-// 		if (err) res.status(500).json({});
-// 		if (user === null || typeof user === 'undefined') res.status(400).json({});
-// 		Quiz.findOne({ _id: user.quizToPass }, (err, quiz) => {
-// 			if (err) res.status(500).json({});
-// 			if (quiz === null || typeof quiz === 'undefined') res.status(400).json({});
-// 			quiz = quiz.toObject();
-// 			const startedAtDate = new Date(user.startedAt);
-// 			startedAtDate.setSeconds(startedAtDate.getSeconds() + quiz.maxTimeToFinish);
-// 			console.log(startedAtDate);
-// 			res.end();
-// 			// user.startedAt === null || typeof user.startedAt === 'undefined'
-// 			// 	? res.status(400).json({})
-// 			// 	: user.startedAt + quiz.maxTimeToFinish > Date.now()
-// 			// 		? res.status(400).json({})
-// 			// 		: res.status(200).json({});
-// 		});
-// 	});
-// });
+
 
 router.get('/isStarted/:id', (req, res) => {
 	const idUser = req.params.id;
