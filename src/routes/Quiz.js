@@ -11,6 +11,12 @@ router.post('/Create', (req, res) => {
 		if (err) console.log(err);
 		ReqQuiz.madeBy = user;
 		ReqQuiz.date = Date.now();
+		let randomToken = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+		typeof ReqQuiz.cookieName === 'undefined' ? ReqQuiz.cookieName = randomToken : console.log('cookie from quiz ',ReqQuiz.cookieName)
+		ReqQuiz.showPrevButton = false
+		ReqQuiz.sendResultOnPageNext = true
+		ReqQuiz.showProgressBar = "bottom"
+		ReqQuiz.firstPageIsStarted = true
 		const quiz = new Quiz(ReqQuiz);
 		quiz
 			.save()
